@@ -22,6 +22,7 @@ import com.android.phone.HapticFeedback;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -763,12 +764,24 @@ public class TwelveKeyDialer extends Activity implements View.OnClickListener,
     }
 
     void callVoicemail() {
-        Intent intent = new Intent(Intent.ACTION_CALL_PRIVILEGED,
-                Uri.fromParts("voicemail", EMPTY_NUMBER, null));
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        mDigits.getText().clear();
-        finish();
+        boolean mVmUsesGoogleVoice = (Settings.System.getInt(getContentResolver(),
+                Settings.System.VM_USES_GOOGLEVOICE, 0) == 1);
+        if(mVmUsesGoogleVoice) {
+            Log.w(TAG, "##### Launcher Google voice #####");
+            Intent intent = new Intent("android.intent.action.MAIN").addCategory("android.intent.category.LAUNCHER");
+            ComponentName componentName = new ComponentName("com.google.android.apps.googlevoice", "com.google.android.apps.googlevoice.SplashActivity");
+            Intent action = intent.setComponent(componentName).setFlags(268435456);
+            startActivity(action);
+            mDigits.getText().clear();
+        } else {
+            Log.w(TAG, "##### Calling voicemail normally #####");
+           Intent intent = new Intent(Intent.ACTION_CALL_PRIVILEGED,
+                    Uri.fromParts("voicemail", EMPTY_NUMBER, null));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            mDigits.getText().clear();
+            finish();
+        }
     }
 
     void dialButtonPressed() {
