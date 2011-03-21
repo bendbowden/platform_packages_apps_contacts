@@ -22,8 +22,8 @@ import com.android.phone.HapticFeedback;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.Context;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -766,6 +766,10 @@ public class TwelveKeyDialer extends Activity implements View.OnClickListener,
     void callVoicemail() {
         boolean mVmUsesGoogleVoice = (Settings.System.getInt(getContentResolver(),
                 Settings.System.VM_USES_GOOGLEVOICE, 0) == 1);
+        boolean mVmUsesYoumail = (Settings.System.getInt(getContentResolver(),
+                Settings.System.VM_USES_YOUMAIL, 0) == 1);
+        boolean mVmUsesVerizon = (Settings.System.getInt(getContentResolver(),
+                Settings.System.VM_USES_VERIZON, 0) == 1);
         if(mVmUsesGoogleVoice) {
             Log.w(TAG, "##### Launcher Google voice #####");
             Intent intent = new Intent("android.intent.action.MAIN").addCategory("android.intent.category.LAUNCHER");
@@ -773,9 +777,23 @@ public class TwelveKeyDialer extends Activity implements View.OnClickListener,
             Intent action = intent.setComponent(componentName).setFlags(268435456);
             startActivity(action);
             mDigits.getText().clear();
+        } else if(mVmUsesYoumail) {
+            Log.w(TAG, "##### Launcher Youmail #####");
+            Intent intent = new Intent("android.intent.action.MAIN").addCategory("android.intent.category.LAUNCHER");
+            ComponentName componentName = new ComponentName("com.loadedbanana.android.youmail", "com.loadedbanana.android.youmail.activity.MessageList");
+            Intent action = intent.setComponent(componentName).setFlags(268435456);
+            startActivity(action);
+            mDigits.getText().clear();
+        } else if(mVmUsesVerizon) {
+            Log.w(TAG, "##### Launcher Verizon VVM #####");
+            Intent intent = new Intent("android.intent.action.MAIN").addCategory("android.intent.category.LAUNCHER");
+            ComponentName componentName = new ComponentName("com.vzw.vvm.androidclient", "com.vzw.vvm.androidclient.ui.list.MessageListActivity");
+            Intent action = intent.setComponent(componentName).setFlags(268435456);
+            startActivity(action);
+            mDigits.getText().clear();
         } else {
             Log.w(TAG, "##### Calling voicemail normally #####");
-           Intent intent = new Intent(Intent.ACTION_CALL_PRIVILEGED,
+            Intent intent = new Intent(Intent.ACTION_CALL_PRIVILEGED,
                     Uri.fromParts("voicemail", EMPTY_NUMBER, null));
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
