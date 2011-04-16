@@ -771,7 +771,7 @@ public class TwelveKeyDialer extends Activity implements View.OnClickListener,
         boolean mVmUsesVerizon = (Settings.System.getInt(getContentResolver(),
                 Settings.System.VM_USES_VERIZON, 0) == 1);
         boolean mVmUsesCarrier = (Settings.System.getInt(getContentResolver(),
-                Settings.System.VM_USES_CARRIER, 1) == 1);
+                Settings.System.VM_USES_CARRIER, 0) == 1);
         if(mVmUsesGoogleVoice) {
             Log.w(TAG, "##### Launcher Google voice #####");
             Intent intent = new Intent("android.intent.action.MAIN").addCategory("android.intent.category.LAUNCHER");
@@ -794,7 +794,7 @@ public class TwelveKeyDialer extends Activity implements View.OnClickListener,
             startActivity(action);
             mDigits.getText().clear();
         } else if (mVmUsesCarrier) {
-            Log.w(TAG, "##### Calling voicemail normally #####");
+            Log.w(TAG, "##### Calling carrier voicemail #####");
             Intent intent = new Intent(Intent.ACTION_CALL_PRIVILEGED,
                     Uri.fromParts("voicemail", EMPTY_NUMBER, null));
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
